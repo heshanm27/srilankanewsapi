@@ -160,18 +160,17 @@ const GetAdaDeranaNews = async (page: number = 1): Promise<News[]> => {
   //     },
   //   });
   //   console.log(data);
-  const data = await run();
+  const data = await run(`https://sinhala.adaderana.lk/sinhala-hot-news.php?pageno=${page}`);
   const newsList: News[] = [];
   const $ = load(data);
   const elementSelector = ".story-text";
 
   $(elementSelector).each((index, parentElement) => {
-    console.log($(parentElement).html());
     const url = $(parentElement).find("a").attr("href");
     const title = $(parentElement)
       .find("a")
       .text()
-      .replace(/(\r\n|\n|\r|\t|[read more])/gim, "")
+      .replace(/(\r\n|\n|\r|\t|[(0)Comments])/gim, "")
       .trim();
     const timestamp = $(parentElement).find("span").text();
     const description = $(parentElement).find("p").text();
@@ -189,10 +188,10 @@ const GetAdaDeranaNews = async (page: number = 1): Promise<News[]> => {
   return newsList;
 };
 
-async function run() {
+async function run(url: string) {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
-  await page.goto("https://sinhala.adaderana.lk/sinhala-hot-news.php?pageno=1");
+  await page.goto(url);
 
   return await page.content();
 }
