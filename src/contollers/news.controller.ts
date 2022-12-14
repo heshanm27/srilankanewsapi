@@ -5,8 +5,6 @@ import client from "../util/initRedis";
 
 const GetNews = async (req: Request, res: Response) => {
   const news: News[] = [];
-  let count = 0;
-  client.del("news");
   client.get("news", async (err, data) => {
     if (err) throw err;
     if (data !== null) {
@@ -17,7 +15,7 @@ const GetNews = async (req: Request, res: Response) => {
 
         news.push(...receviedNews);
       }
-      client.setex("news", 10, JSON.stringify(news));
+      client.setex("news", 900, JSON.stringify(news));
       res.status(200).json(news);
     }
   });
