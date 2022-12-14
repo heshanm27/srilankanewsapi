@@ -1,7 +1,7 @@
 import axios from "axios";
 import { load } from "cheerio";
 import puppeteer from "puppeteer";
-
+import { INewsPaper } from "../util/dataOrigins";
 export interface News {
   title: string;
   url?: string;
@@ -10,6 +10,44 @@ export interface News {
   description: string;
   source: string;
 }
+
+const GetNewsData = async (source: INewsPaper, page: number = 0): Promise<News[]> => {
+  console.log(source.url);
+  const { data } = await axios.get(source.url, {
+    headers: {
+      "Accept-Encoding": "application/json",
+    },
+  });
+
+  const newsList: News[] = [];
+
+  const $ = load(data);
+
+  const elementSelector = source.elementSelector!;
+
+  $(elementSelector).each((index, parentElement) => {
+    const html = $(parentElement).html();
+    const url = $(parentElement).find("a").attr("href");
+    const title = $(parentElement)
+      .find("a")
+      .text()
+      .replace(source.selectors?.titleRegx ? source.selectors?.titleRegx : /(\r\n|\n|\r|\t)/gm, "")
+      .trim();
+    const timestamp = $(parentElement).find(source.selectors?.timestamp).text();
+    const description = $(parentElement).find(source.selectors?.discription).text();
+    const img = $(parentElement).find("img").attr("src");
+
+    newsList.push({
+      title,
+      url,
+      timestamp,
+      img,
+      description,
+      source: source.sourceName,
+    });
+  });
+  return newsList;
+};
 
 const GetLankaDeepaNews = async (page: number = 0): Promise<News[]> => {
   const { data } = await axios.get(`https://www.lankadeepa.lk/latest_news/1/${page * 30}`, {
@@ -153,18 +191,10 @@ const GetAdaNews = async (page: number = 0): Promise<News[]> => {
 };
 
 const GetAdaDeranaNews = async (page: number = 1): Promise<News[]> => {
-  //   console.log(page);
-  //   const { data } = await axios.get(`https://sinhala.adaderana.lk/sinhala-hot-news.php?pageno=${page}`, {
-  //     headers: {
-  //       "Accept-Encoding": "application/json",
-  //     },
-  //   });
-  //   console.log(data);
   const data = await run(`https://sinhala.adaderana.lk/sinhala-hot-news.php?pageno=${page}`);
   const newsList: News[] = [];
   const $ = load(data);
   const elementSelector = ".story-text";
-
   $(elementSelector).each((index, parentElement) => {
     const url = $(parentElement).find("a").attr("href");
     const title = $(parentElement)
@@ -188,6 +218,41 @@ const GetAdaDeranaNews = async (page: number = 1): Promise<News[]> => {
   return newsList;
 };
 
+const GetBBCNews = async (page: number = 0): Promise<News[]> => {
+  console.log(page);
+  const { data } = await axios.get(`https://www.bbc.com/sinhala/topics/cg7267dz901t?page=${page}`, {
+    headers: {
+      "Accept-Encoding": "application/json",
+    },
+  });
+
+  const newsList: News[] = [];
+  const $ = load(data);
+  const elementSelector = ".bbc-v8cf3q";
+
+  $(elementSelector).each((index, parentElement) => {
+    const url = $(parentElement).find("a").attr("href");
+    const title = $(parentElement)
+      .find("a")
+      .text()
+      .replace(/(\r\n|\n|\r|\t)/gim, "")
+      .trim();
+    const timestamp = $(parentElement).find("time").text();
+    const description = $(parentElement).find(".cat-b-text").text();
+    const img = $(parentElement).find("img").attr("src");
+
+    newsList.push({
+      title,
+      url,
+      timestamp,
+      img,
+      description,
+      source: "bbcsinhala.com",
+    });
+  });
+  return newsList;
+};
+
 async function run(url: string) {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
@@ -195,4 +260,4 @@ async function run(url: string) {
 
   return await page.content();
 }
-export { GetLankaDeepaNews, GetDeshayaNews, GetMawubimaNews, GetAdaNews, GetAdaDeranaNews };
+export { GetNewsData, GetLankaDeepaNews, GetDeshayaNews, GetMawubimaNews, GetAdaNews, GetAdaDeranaNews, GetBBCNews };

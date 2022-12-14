@@ -1,7 +1,9 @@
 import express, { Request, Response } from "express";
 import FeatureNews from "./routes/featureNews.route";
 import News from "./routes/news.route";
+import dotenv from "dotenv";
 
+dotenv.config();
 const app = express();
 
 app.get("/", (req: Request, res: Response) => {
