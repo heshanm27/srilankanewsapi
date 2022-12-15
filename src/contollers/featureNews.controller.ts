@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import axios from "axios";
 import { load } from "cheerio";
-import { FeatureNews } from "../util/dataOrigins";
+import { NewsSources } from "../util/dataOrigins";
 interface News {
   title: string;
   url?: string;
@@ -14,7 +14,7 @@ interface News {
 const GetNewsFeatures = async (req: Request, res: Response) => {
   const value: Promise<string[]> = new Promise(function (myResolve, myReject) {
     const urls: string[] = [];
-    FeatureNews.forEach((newsPaper) => {
+    NewsSources.forEach((newsPaper) => {
       console.log(newsPaper.url);
       axios.get(newsPaper.url).then((res) => {
         const $ = load(res.data);
