@@ -69,15 +69,15 @@ export const NewsSources: INewsPaper[] = [
       timestamp: "time",
     },
   },
-  {
-    sourceName: "Adaderana.lk",
-    url: "https://sinhala.adaderana.lk/sinhala-hot-news.php?pageno=",
-    baseUrl: "https://sinhala.adaderana.lk",
-    elementSelector: ".story-text",
-    selectors: {
-      titleRegx: "/(\r\n|\n|\r|\t|[(0)Comments])/gim",
-      discription: "p",
-      timestamp: "span",
-    },
-  },
 ];
+// {
+//   sourceName: "Adaderana.lk",
+//   url: "https://sinhala.adaderana.lk/sinhala-hot-news.php?pageno=",
+//   baseUrl: "https://sinhala.adaderana.lk",
+//   elementSelector: ".story-text",
+//   selectors: {
+//     titleRegx: "/(\r\n|\n|\r|\t|[(0)Comments])/gim",
+//     discription: "p",
+//     timestamp: "span",
+//   },
+// },
