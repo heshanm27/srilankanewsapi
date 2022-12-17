@@ -63,8 +63,11 @@ const GetNewsData = async (source: INewsPaper): Promise<News[]> => {
 };
 
 const GetNewsBySourceData = async (source: INewsPaper, page: number): Promise<News[]> => {
+  console.log(source.url, page);
+  console.log(source.pageMultiplier ? source.pageMultiplier : page);
+  console.log(source.url + (source.pageMultiplier ? source.pageMultiplier * page : page));
   //http request for get data
-  const { data } = await axios.get(source.url + page * (source.pageMultiplier ? source.pageMultiplier : page), {
+  const { data } = await axios.get(source.url + (source.pageMultiplier ? source.pageMultiplier * page : page), {
     headers: {
       "Accept-Encoding": "application/json",
     },

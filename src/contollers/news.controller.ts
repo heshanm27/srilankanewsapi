@@ -58,6 +58,7 @@ const GetNewsByDynamic = async (req: Request<{ source: string; page: string }, {
       client.setex(key, 300, JSON.stringify(news));
       return res.status(200).json({ data: news, succes: true });
     } catch (err) {
+      console.log(err);
       return res.status(500).json({ succes: false, err: "Error Occured Can't Retrive Data From News Source " });
     }
   });

@@ -25,9 +25,11 @@ export const NewsSources: INewsPaper[] = [
   },
   {
     sourceName: "Lankadeepa.lk",
-    url: `https://www.lankadeepa.lk/latest_news/`,
+    url: `https://www.lankadeepa.lk/latest_news/1/`,
     baseUrl: "https://www.lankadeepa.lk/",
     elementSelector: ".simple-thumb",
+    pageMultiplier: 30,
+    defaultPage: 0,
     selectors: {
       discription: ".catexcerpt",
       timestamp: ".timeandauthor",
