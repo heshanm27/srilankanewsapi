@@ -26,7 +26,6 @@ const GetNews = async (req: Request, res: Response<MyResponse<News[]>>) => {
 
       //set data to redis
       client.setex("news", 900, JSON.stringify(news));
-
       res.status(200).json({ data: news, succes: true });
     } catch (err: any) {
       return res.status(500).json({ succes: false, err: "Error Occured Can't Retrive Data From News Source " });
@@ -35,9 +34,7 @@ const GetNews = async (req: Request, res: Response<MyResponse<News[]>>) => {
 };
 
 const GetNewsByDynamic = async (req: Request<{ source: string; page: string }, {}, {}>, res: Response<MyResponse<News[]>>) => {
-  const { source } = req.params;
-
-  const page = parseInt(req.params.page) ? parseInt(req.params.page) : 1;
+  const { source, page } = req.params;
 
   const news: News[] = [];
 
@@ -55,16 +52,13 @@ const GetNewsByDynamic = async (req: Request<{ source: string; page: string }, {
     //if data is available return data from redis
     if (data !== null) return res.status(200).json(JSON.parse(data!));
 
-    if (page === 1) {
-      news.push(...(await GetNewsBySourceData(newsSource, newsSource.defaultPage ?? page)));
+    try {
+      news.push(...(await GetNewsBySourceData(newsSource, parseInt(page))));
       client.setex(`${newsSource}${page}`, 300, JSON.stringify(news));
       return res.status(200).json({ data: news, succes: true });
+    } catch (err) {
+      return res.status(500).json({ succes: false, err: "Error Occured Can't Retrive Data From News Source " });
     }
-
-    //return data from given page
-    news.push(...(await GetNewsBySourceData(newsSource, page)));
-    client.setex(`${newsSource}${page}`, 300, JSON.stringify(news));
-    return res.status(200).json({ data: news, succes: true });
   });
 };
 
