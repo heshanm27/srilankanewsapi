@@ -16,7 +16,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/news/sinhala/feature", FeatureNews);
 app.use("/news/sinhala", News);
 app.use(errorHandler);
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
 });
