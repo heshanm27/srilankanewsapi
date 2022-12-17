@@ -24,10 +24,6 @@ const GetNewsData = async (source: INewsPaper): Promise<News[]> => {
     },
   });
 
-  // console.log("data", data);
-
-  // const data = await GetFromPuppteer(source.url + page);
-
   const newsList: News[] = [];
 
   //load data to cheerio

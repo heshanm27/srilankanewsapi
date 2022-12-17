@@ -45,7 +45,7 @@ const GetNewsByDynamic = async (req: Request<{ source: string; page: string }, {
 
   const key = `${newsSource.sourceName}${page}`;
   //return news source page 1 if page is not specified
-  console.log(key);
+
   client.get(key, async (err, data) => {
     //if error occured return error
     if (err) return new Error("Some thing went wrong from our side");
