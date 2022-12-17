@@ -43,9 +43,10 @@ const GetNewsByDynamic = async (req: Request<{ source: string; page: string }, {
 
   if (!newsSource) throw new CustomError("News source not found", 404);
 
+  const key = `${newsSource.sourceName}${page}`;
   //return news source page 1 if page is not specified
-
-  client.get(`${newsSource}${page}`, async (err, data) => {
+  console.log(key);
+  client.get(key, async (err, data) => {
     //if error occured return error
     if (err) return new Error("Some thing went wrong from our side");
 
@@ -54,7 +55,7 @@ const GetNewsByDynamic = async (req: Request<{ source: string; page: string }, {
 
     try {
       news.push(...(await GetNewsBySourceData(newsSource, parseInt(page))));
-      client.setex(`${newsSource}${page}`, 300, JSON.stringify(news));
+      client.setex(key, 300, JSON.stringify(news));
       return res.status(200).json({ data: news, succes: true });
     } catch (err) {
       return res.status(500).json({ succes: false, err: "Error Occured Can't Retrive Data From News Source " });
