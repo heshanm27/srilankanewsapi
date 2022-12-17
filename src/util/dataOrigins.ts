@@ -13,16 +13,16 @@ export interface INewsPaper {
 }
 
 export const NewsSources: INewsPaper[] = [
-  {
-    sourceName: "Mawbima.lk",
-    url: `https://mawbima.lk/category/%E0%B6%AF%E0%B7%9A%E0%B7%81%E0%B7%93%E0%B6%BA/page/`,
-    baseUrl: "https://mawbima.lk",
-    elementSelector: ".td-category-pos-",
-    selectors: {
-      discription: ".entry-date",
-      timestamp: ".td-post-date",
-    },
-  },
+  // {
+  //   sourceName: "Mawbima.lk",
+  //   url: `https://mawbima.lk/category/%E0%B6%AF%E0%B7%9A%E0%B7%81%E0%B7%93%E0%B6%BA/page/`,
+  //   baseUrl: "https://mawbima.lk",
+  //   elementSelector: ".td-category-pos-",
+  //   selectors: {
+  //     discription: ".entry-date",
+  //     timestamp: ".td-post-date",
+  //   },
+  // },
   {
     sourceName: "Lankadeepa.lk",
     url: `https://www.lankadeepa.lk/latest_news/1/`,
