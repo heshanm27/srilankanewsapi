@@ -4,12 +4,11 @@ import { NewsSources } from "../util/dataOrigins";
 import client from "../service/initRedis";
 import CustomError from "../util/error/customError";
 
-type MyResponse<T> = { err: string; succes: boolean } | { data: T };
+type MyResponse<T> = { err: string; succes: boolean } | { data: T; succes: boolean };
 
 const GetNews = async (req: Request, res: Response<MyResponse<News[]>>) => {
   const news: News[] = [];
 
-  client.del("news");
   //get data from redis
   client.get("news", async (err, data) => {
     //if error occured return error
@@ -28,7 +27,7 @@ const GetNews = async (req: Request, res: Response<MyResponse<News[]>>) => {
       //set data to redis
       client.setex("news", 900, JSON.stringify(news));
 
-      res.status(200).json({ data: news });
+      res.status(200).json({ data: news, succes: true });
     } catch (err: any) {
       return res.status(500).json({ succes: false, err: "Error Occured Can't Retrive Data From News Source " });
     }
@@ -48,14 +47,25 @@ const GetNewsByDynamic = async (req: Request<{ source: string; page: string }, {
   if (!newsSource) throw new CustomError("News source not found", 404);
 
   //return news source page 1 if page is not specified
-  if (page === 1) {
-    news.push(...(await GetNewsBySourceData(newsSource, newsSource.defaultPage ?? page)));
-    return res.status(200).json({ data: news });
-  }
 
-  //return data from given page
-  news.push(...(await GetNewsBySourceData(newsSource, page)));
-  return res.status(200).json({ data: news });
+  client.get(`${newsSource}${page}`, async (err, data) => {
+    //if error occured return error
+    if (err) return new Error("Some thing went wrong from our side");
+
+    //if data is available return data from redis
+    if (data !== null) return res.status(200).json(JSON.parse(data!));
+
+    if (page === 1) {
+      news.push(...(await GetNewsBySourceData(newsSource, newsSource.defaultPage ?? page)));
+      client.setex(`${newsSource}${page}`, 300, JSON.stringify(news));
+      return res.status(200).json({ data: news, succes: true });
+    }
+
+    //return data from given page
+    news.push(...(await GetNewsBySourceData(newsSource, page)));
+    client.setex(`${newsSource}${page}`, 300, JSON.stringify(news));
+    return res.status(200).json({ data: news, succes: true });
+  });
 };
 
 export { GetNews, GetNewsByDynamic };
