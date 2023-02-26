@@ -25,7 +25,7 @@ const GetNews = async (req: Request, res: Response<MyResponse<News[]>>) => {
       }
 
       //set data to redis
-      client.setex("news", 1, JSON.stringify(news));
+      client.setex("news", 600, JSON.stringify(news));
       res.status(200).json({ data: news, succes: true });
     } catch (err: any) {
       return res.status(500).json({ succes: false, err: "Error Occured Can't Retrive Data From News Source " });
@@ -56,7 +56,7 @@ const GetNewsByDynamic = async (req: Request<{ source: string; page: string }, {
     try {
       console.log("called");
       news.push(...(await GetNewsBySourceData(newsSource, parseInt(page))));
-      client.setex(key, 1, JSON.stringify(news));
+      client.setex(key, 300, JSON.stringify(news));
       return res.status(200).json({ data: news, succes: true });
     } catch (err) {
       console.log(err);
