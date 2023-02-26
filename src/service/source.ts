@@ -17,7 +17,7 @@ const GetNewsData = async (source: INewsPaper): Promise<News[]> => {
   const page = source.defaultPage ?? 1;
 
   //http request for get data
-
+  console.log("soire", source.url + page);
   const { data } = await axios.get(source.url + page, {
     headers: {
       "Accept-Encoding": "application/json",
@@ -62,10 +62,14 @@ const GetNewsData = async (source: INewsPaper): Promise<News[]> => {
   return newsList;
 };
 
-const GetNewsBySourceData = async (source: INewsPaper, page: number): Promise<News[]> => {
+const GetNewsBySourceData = async (source: INewsPaper, pageNo: number): Promise<News[]> => {
+  let page = pageNo <= 0 ? 1 : pageNo;
+  if (source.defaultPage === 0) {
+    console.log("called", page);
+    page = pageNo <= 1 ? 0 : pageNo;
+  }
+
   console.log(source.url, page);
-  console.log(source.pageMultiplier ? source.pageMultiplier : page);
-  console.log(source.url + (source.pageMultiplier ? source.pageMultiplier * page : page));
   //http request for get data
   const { data } = await axios.get(source.url + (source.pageMultiplier ? source.pageMultiplier * page : page), {
     headers: {

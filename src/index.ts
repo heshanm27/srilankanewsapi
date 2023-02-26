@@ -13,8 +13,8 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Welome to Sri Lankan News API");
 });
 
-app.use("/news/sinhala/feature", FeatureNews);
-app.use("/news/sinhala", News);
+app.use("/news/feature", FeatureNews);
+app.use("/news", News);
 app.use(errorHandler);
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, async () => {

@@ -16,7 +16,7 @@ const GetNews = async (req: Request, res: Response<MyResponse<News[]>>) => {
 
     //if data is available return data from redis
     if (data !== null) return res.status(200).json(JSON.parse(data!));
-
+    console.log("Called");
     //if data is not available in redis get data from news sources
     try {
       for await (const newsPaper of NewsSources) {
@@ -25,7 +25,7 @@ const GetNews = async (req: Request, res: Response<MyResponse<News[]>>) => {
       }
 
       //set data to redis
-      client.setex("news", 900, JSON.stringify(news));
+      client.setex("news", 1, JSON.stringify(news));
       res.status(200).json({ data: news, succes: true });
     } catch (err: any) {
       return res.status(500).json({ succes: false, err: "Error Occured Can't Retrive Data From News Source " });
@@ -54,8 +54,9 @@ const GetNewsByDynamic = async (req: Request<{ source: string; page: string }, {
     if (data !== null) return res.status(200).json(JSON.parse(data!));
 
     try {
+      console.log("called");
       news.push(...(await GetNewsBySourceData(newsSource, parseInt(page))));
-      client.setex(key, 300, JSON.stringify(news));
+      client.setex(key, 1, JSON.stringify(news));
       return res.status(200).json({ data: news, succes: true });
     } catch (err) {
       console.log(err);

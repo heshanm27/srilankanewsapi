@@ -13,16 +13,6 @@ export interface INewsPaper {
 }
 
 export const NewsSources: INewsPaper[] = [
-  // {
-  //   sourceName: "Mawbima.lk",
-  //   url: `https://mawbima.lk/category/%E0%B6%AF%E0%B7%9A%E0%B7%81%E0%B7%93%E0%B6%BA/page/`,
-  //   baseUrl: "https://mawbima.lk",
-  //   elementSelector: ".td-category-pos-",
-  //   selectors: {
-  //     discription: ".entry-date",
-  //     timestamp: ".td-post-date",
-  //   },
-  // },
   {
     sourceName: "Lankadeepa.lk",
     url: `https://www.lankadeepa.lk/latest_news/1/`,
@@ -33,6 +23,16 @@ export const NewsSources: INewsPaper[] = [
     selectors: {
       discription: ".catexcerpt",
       timestamp: ".timeandauthor",
+    },
+  },
+  {
+    sourceName: "Mawbima.lk",
+    url: `https://mawbima.lk/category/%E0%B6%AF%E0%B7%9A%E0%B7%81%E0%B7%93%E0%B6%BA/page/`,
+    baseUrl: "https://mawbima.lk",
+    elementSelector: ".td-category-pos-",
+    selectors: {
+      discription: ".entry-date",
+      timestamp: ".td-post-date",
     },
   },
   {
@@ -64,10 +64,10 @@ export const NewsSources: INewsPaper[] = [
   {
     sourceName: "BBCSinhala.com",
     url: "https://www.bbc.com/sinhala/topics/cg7267dz901t?page=",
-    baseUrl: "https://www.bbc.com/sinhala/topics/",
-    elementSelector: ".bbc-v8cf3q",
+    baseUrl: "https://www.bbc.com/sinhala/topics/cg7267dz901t",
+    elementSelector: ".bbc-t44f9r",
     selectors: {
-      discription: ".cat-b-text",
+      discription: ".bbc-1gnhmg2",
       timestamp: "time",
     },
   },
